@@ -20,7 +20,7 @@ async function pegaEmoji(pergunta){
         model: "text-davinci-003",
         prompt: `Convert this movie title into emoji '${pergunta}'.`,
         max_tokens: 100,
-        temperature: 0
+        temperature: 0.8
     });
 
     return resposta.data.choices[0].text
