@@ -18,10 +18,10 @@ async function pegaEmoji(pergunta){
 
     const resposta = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Descreva o seguinte filme em emojis: '${pergunta}'.`,
+        prompt: `Transform a movie overview into emojis: '${pergunta}'.`,
         max_tokens: 100,
         temperature: 0.8
-    });
+    }); 
 
     return resposta.data.choices[0].text
     
@@ -46,12 +46,12 @@ async function pegaIdFilme(id){
 
 async function montaQuiz(){
     var filme = await pegaFilme()
-    var emojis = await pegaEmoji(filme.title) 
+    var emojis = await pegaEmoji(filme.overview) 
     var genre = await pegaIdFilme(filme.id)
  
-    while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️"){
+    while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️" || filme.overview === ''){
         filme = await pegaFilme()
-        emojis = await pegaEmoji(filme.title)
+        emojis = await pegaEmoji(filme.overview)
         genre = await pegaIdFilme(filme.id)
     }
 
@@ -63,7 +63,8 @@ async function montaQuiz(){
             genre: genre
         },
         poster: 'https://image.tmdb.org/t/p/original/'+filme.poster_path,
-        answer: filme.title
+        answer: filme.title,
+        original: filme.original_title
     }
 }
 
