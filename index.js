@@ -29,9 +29,10 @@ async function pegaEmoji(pergunta){
 
 async function pegaFilme(){
     const movieID = Math.floor(Math.random() * 50 + 1)
-    const conexao = await fetch(`https://api.themoviedb.org/3/discover/movie/?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}"`).catch(err => console.log(err))
+    const movieIndex = Math.floor(Math.random() * 19 + 1)
+    const conexao = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}`).catch(err => console.log(err))
     const dados = await conexao.json()
-    return dados.results[Math.floor(Math.random() * 20 + 1)]
+    return dados.results[movieIndex]
 }
 
 async function pegaIdFilme(id){
@@ -47,7 +48,7 @@ async function montaQuiz(){
     var filme = await pegaFilme()
     var emojis = await pegaEmoji(filme.title) 
     var genre = await pegaIdFilme(filme.id)
-
+ 
     while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️"){
         filme = await pegaFilme()
         emojis = await pegaEmoji(filme.title)
