@@ -31,18 +31,27 @@ async function pegaFilme(){
     const movieID = Math.floor(Math.random() * 50 + 1)
     const conexao = await fetch(`https://api.themoviedb.org/3/discover/movie/?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}"`).catch(err => console.log(err))
     const dados = await conexao.json()
-    console.log(dados.results.length)
     return dados.results[Math.floor(Math.random() * 20 + 1)]
 }
 
+async function pegaIdFilme(id){
+
+    const conexao = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${MOVIE_KEY}&language=pt-BR`)
+    const data = await conexao.json()
+
+    return data.genres
+
+}
 
 async function montaQuiz(){
     var filme = await pegaFilme()
     var emojis = await pegaEmoji(filme.title) 
+    var genre = await pegaIdFilme(filme.id)
 
     while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️"){
         filme = await pegaFilme()
         emojis = await pegaEmoji(filme.title)
+        genre = await pegaIdFilme(filme.id)
     }
 
 
@@ -50,7 +59,7 @@ async function montaQuiz(){
             hints: {
             release_date: filme.release_date,
             overview: filme.overview,
-            genre: filme.genres
+            genre: genre
         },
         poster: 'https://image.tmdb.org/t/p/original/'+filme.poster_path,
         answer: filme.title
