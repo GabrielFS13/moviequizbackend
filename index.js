@@ -18,7 +18,7 @@ async function pegaEmoji(pergunta){
 
     const resposta = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Convert this movie title into emoji '${pergunta}'.`,
+        prompt: `Descreva o seguinte filme em emojis: '${pergunta}'.`,
         max_tokens: 100,
         temperature: 0.8
     });
@@ -28,20 +28,21 @@ async function pegaEmoji(pergunta){
 }
 
 async function pegaFilme(){
-    const movieID = Math.floor(Math.random() * 600 + 1)
-    const conexao = await fetch(`https://api.themoviedb.org/3/movie/${movieID}?api_key=${MOVIE_KEY}&language=pt-BR&sort_by=popularity.asc"`).catch(err => console.log(err))
+    const movieID = Math.floor(Math.random() * 50 + 1)
+    const conexao = await fetch(`https://api.themoviedb.org/3/discover/movie/?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}"`).catch(err => console.log(err))
     const dados = await conexao.json()
-    return dados
+    console.log(dados.results.length)
+    return dados.results[Math.floor(Math.random() * 20 + 1)]
 }
 
 
 async function montaQuiz(){
     var filme = await pegaFilme()
-    var emojis = await pegaEmoji(filme.original_title) 
+    var emojis = await pegaEmoji(filme.title) 
 
     while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️"){
         filme = await pegaFilme()
-        emojis = await pegaEmoji(filme.original_title)
+        emojis = await pegaEmoji(filme.title)
     }
 
 
@@ -51,6 +52,7 @@ async function montaQuiz(){
             overview: filme.overview,
             genre: filme.genres
         },
+        poster: 'https://image.tmdb.org/t/p/original/'+filme.poster_path,
         answer: filme.title
     }
 }
