@@ -76,11 +76,11 @@ async function montaQuiz(gen_id = false){
 app.use(cors())
 
 
-app.get('/', async (req, res) =>{
+app.get('/',cors(), async (req, res) =>{
     res.json(await montaQuiz())
 })
 
-app.get('/genero/:id', async (req, res) =>{
+app.get('/genero/:id',cors(), async (req, res) =>{
     res.json(await montaQuiz(req.params.id))
 })
 
