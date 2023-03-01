@@ -27,10 +27,15 @@ async function pegaEmoji(pergunta){
     
 }
 
-async function pegaFilme(){
+async function pegaFilme(genero_id){
     const movieID = Math.floor(Math.random() * 50 + 1)
     const movieIndex = Math.floor(Math.random() * 19 + 1)
-    const conexao = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}`).catch(err => console.log(err))
+    if(genero_id){
+        conexaoString = `https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}&with_genres=${genero_id}`
+    }else{
+        conexaoString = `https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&language=pt-BR&page=${movieID}`
+    }
+    const conexao = await fetch(conexaoString).catch(err => console.log(err))
     const dados = await conexao.json()
     return dados.results[movieIndex]
 }
@@ -44,13 +49,13 @@ async function pegaIdFilme(id){
 
 }
 
-async function montaQuiz(){
-    var filme = await pegaFilme()
+async function montaQuiz(gen_id = false){
+    var filme = await pegaFilme(gen_id)
     var emojis = await pegaEmoji(filme.overview) 
     var genre = await pegaIdFilme(filme.id)
  
     while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️" || filme.overview === ''){
-        filme = await pegaFilme()
+        filme = await pegaFilme(gen_id)
         emojis = await pegaEmoji(filme.overview)
         genre = await pegaIdFilme(filme.id)
     }
@@ -59,7 +64,7 @@ async function montaQuiz(){
     return {emojis, 
             hints: {
             release_date: filme.release_date,
-            overview: filme.overview,
+            overview: filme.overview.slice(0, 50),
             genre: genre
         },
         poster: 'https://image.tmdb.org/t/p/original/'+filme.poster_path,
@@ -75,6 +80,9 @@ app.get('/', async (req, res) =>{
     res.json(await montaQuiz())
 })
 
+app.get('/genero/:id', async (req, res) =>{
+    res.json(await montaQuiz(req.params.id))
+})
 
 
 app.listen(PORT, () =>{
