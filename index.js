@@ -18,7 +18,7 @@ async function pegaEmoji(pergunta){
 
     const resposta = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Transform a movie overview into emojis: '${pergunta}'.`,
+        prompt: `Você vai receber um título de um filme e a sinpse, e deve traduzir para emojis: '${pergunta}'.`,
         max_tokens: 100,
         temperature: 0.8
     }); 
@@ -51,12 +51,12 @@ async function pegaIdFilme(id){
 
 async function montaQuiz(gen_id = false){
     var filme = await pegaFilme(gen_id)
-    var emojis = await pegaEmoji(filme.overview) 
+    var emojis = await pegaEmoji(filme.overview, filme.title) 
     var genre = await pegaIdFilme(filme.id)
  
     while(emojis === "\n\n🤷‍♂️" || emojis === "\n\n❓" || emojis == "\n\n🤔🤷‍♂️🤷‍♀️" || filme.overview === ''){
         filme = await pegaFilme(gen_id)
-        emojis = await pegaEmoji(filme.overview)
+        emojis = await pegaEmoji(filme.overview, filme.title)
         genre = await pegaIdFilme(filme.id)
     }
 
