@@ -14,11 +14,11 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config)
 
-async function pegaEmoji(pergunta){
+async function pegaEmoji(sinopse, title){
 
     const resposta = await openai.createCompletion({
         model: "text-davinci-003",
-        prompt: `Você vai receber um título de um filme e a sinpse, e deve traduzir para emojis: '${pergunta}'.`,
+        prompt: `Você vai receber um título de um filme e a sinopse, e deve traduzir para emojis: sinopse: ${sinopse}, título: ${title}.`,
         max_tokens: 100,
         temperature: 0.8
     }); 
