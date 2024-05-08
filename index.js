@@ -1,32 +1,35 @@
-require('dotenv').config()
-const express = require("express")
+import express from 'express'
+import cors from 'cors'
+import 'dotenv/config'
+import axios from 'axios'
 const app = express()
-var cors = require('cors')
-const { Configuration, OpenAIApi } = require("openai");
 const PORT = process.env.PORT || 3002
 const API_KEY = process.env.API_KEY
 const MOVIE_KEY = process.env.API_MDB
 
 
-const config = new Configuration({
-    apiKey: API_KEY
-})
-
-const openai = new OpenAIApi(config)
 
 async function pegaEmoji(overview, title){
-    const resposta = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: `You will receive a title and overview of a movie, you have to transform both of them to ONLY EMOJIS: title: ${title} overview: ${overview}`,
-        max_tokens: 100,
-        temperature: 0.5
-    }); 
-    return resposta.data.choices[0].text
+    const completion = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: 'gpt-3.5-turbo',
+        messages: [
+            { role: "system", content: "You will receive a title and overview of a movie, you have to transform both of them to ONLY EMOJIS" },
+            { role: "user", content:  `title: ${title} overview: ${overview}`}
+        ],
+        max_tokens: 50 
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+        }
+    })
+    return completion.data.choices[0]
 }
 
 async function pegaFilme(genero_id){
     const movieID = Math.floor(Math.random() * 50 + 1)
     const movieIndex = Math.floor(Math.random() * 20 + 1)
+    let conexaoString = ''
     if(genero_id){
         conexaoString = `https://api.themoviedb.org/3/discover/movie?api_key=${MOVIE_KEY}&language=en-US&page=${movieID}&with_genres=${genero_id}`
     }else{
