@@ -1,4 +1,4 @@
-<h1 align="center">Guess the Movie with Emojis</h1>
+<h1 align="center">Movie Quiz com Emojis</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/API-The%20Movie%20DB-red" />
@@ -7,7 +7,7 @@
 
 ## Sobre o Projeto
 
-Guess the Movie with Emojis é um jogo divertido onde o jogador deve adivinhar o título de um filme com base em emojis que representam palavras-chave do título. O jogo utiliza a API do MovieDB para obter uma lista de filmes e transforma o título do filme em uma sequência de emojis, desafiando o jogador a decifrar.
+Movie Quiz com Emojis é um jogo divertido onde o jogador deve adivinhar o título de um filme com base em emojis que representam palavras-chave do título. O jogo utiliza a API do MovieDB para obter uma lista de filmes e transforma o título do filme em uma sequência de emojis, desafiando o jogador a decifrar.
 
 O jogador tem 4 tentativas para adivinhar o título correto do filme. A cada erro, uma dica é revelada, aumentando as chances do jogador de acertar.
 
